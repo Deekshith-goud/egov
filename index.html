@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Dashboard | Telangana Women & Child Safety Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Main Header */
+        .main-header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .govt-logo .logo-img {
+            height: 50px;
+            width: auto;
+            margin-right: 15px;
+        }
+
+        .site-title h1 {
+            color: #1e3c72;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .site-title p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            min-width: 260px;
+            background: #fff;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            z-index: 900;
+        }
+
+        .sidebar-nav h3 {
+            color: #999;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            padding: 0 10px;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+        }
+
+        .sidebar-nav li a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #555;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .sidebar-nav li a .fas {
+            width: 30px;
+            font-size: 16px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .sidebar-nav li a:hover {
+            background-color: #f0f2f5;
+            color: #1e3c72;
+        }
+
+        .sidebar-nav li a.active {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            box-shadow: 0 4px 10px rgba(30, 60, 114, 0.3);
+        }
+        
+        /* Quick Links Styling */
+        .quick-links {
+            padding: 15px 0;
+            border-top: 1px solid #eee;
+            margin-top: auto;
+        }
+
+        .quick-links h3 {
+            color: #999;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            padding: 0 10px;
+        }
+
+        .quick-links ul {
+            list-style: none;
+        }
+
+        .quick-links li {
+            margin-bottom: 8px;
+        }
+
+        .quick-link-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            color: #555;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            background-color: #f0f2f5;
+            border: 1px solid #e0e0e0;
+        }
+
+        .quick-link-item .fas {
+            width: 25px;
+            font-size: 16px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .quick-link-item:hover {
+            background-color: #e9eef7;
+            border-color: #1e3c72;
+            color: #1e3c72;
+        }
+
+        .quick-link-item.emergency {
+            background-color: #fff0f0;
+            border-color: #f44336;
+            color: #c62828;
+            font-weight: 600;
+        }
+
+        .quick-link-item.emergency:hover {
+            background-color: #f44336;
+            color: #fff;
+        }
+
+
+        .zone-alerts {
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .zone-alerts h3 {
+            color: #999;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            padding: 0 10px;
+        }
+
+        .zone-alerts ul {
+            list-style: none;
+        }
+
+        .zone-alerts li {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .zone-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+
+        .zone-dot.good { background-color: #4CAF50; }
+        .zone-dot.above-average { background-color: #8BC34A; }
+        .zone-dot.average { background-color: #FFC107; }
+        .zone-dot.below-average { background-color: #FF9800; }
+        .zone-dot.poor { background-color: #F44336; }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            position: relative;
+        }
+        
+        /* Map container */
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Safety score legend */
+        .safety-legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-size: 12px;
+        }
+
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            margin-right: 8px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="govt-logo">
+             <img src="lo.jpg" alt="Telangana State Emblem" class="logo-img">
+        </div>
+        <div class="site-title">
+            <h1>Women & Child Safety Dashboard</h1>
+            <p>Government of Telangana | Real-time Safety Monitoring</p>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <h3>Navigation</h3>
+                <ul>
+                    <li><a href="index.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="report_incident.html"><i class="fas fa-exclamation-triangle"></i> Report Incident</a></li>
+                    <li><a href="quick_links.html"><i class="fas fa-life-ring"></i> Helplines</a></li>
+                    <li><a href="myreports.html"><i class="fas fa-history"></i> My Reports</a></li>
+                    <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                </ul>
+            </nav>
+
+             <div class="quick-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="tel:100" class="quick-link-item emergency"><i class="fas fa-exclamation-circle"></i> Police (100)</a></li>
+                    <li><a href="tel:1091" class="quick-link-item emergency"><i class="fas fa-female"></i> Women Helpline (1091)</a></li>
+                    <li><a href="tel:112" class="quick-link-item"><i class="fas fa-phone-alt"></i> All-in-One (112)</a></li>
+                    <li><a href="tel:1098" class="quick-link-item"><i class="fas fa-child"></i> Childline (1098)</a></li>
+                </ul>
+            </div>
+
+            <div class="zone-alerts">
+                <h3>Safety Score Zones</h3>
+                <ul>
+                    <li><span class="zone-dot good"></span> Good (4.1-5.0)</li>
+                    <li><span class="zone-dot above-average"></span> Above Average (3.1-4.0)</li>
+                    <li><span class="zone-dot average"></span> Average (2.1-3.0)</li>
+                    <li><span class="zone-dot below-average"></span> Below Average (1.1-2.0)</li>
+                    <li><span class="zone-dot poor"></span> Poor (0.0-1.0)</li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div id="map"></div>
+            
+            <div class="safety-legend">
+                <div class="legend-title">Safety Score Legend</div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #4CAF50;"></div>
+                    <span>Good (4.1-5.0)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #8BC34A;"></div>
+                    <span>Above Average (3.1-4.0)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #FFC107;"></div>
+                    <span>Average (2.1-3.0)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #FF9800;"></div>
+                    <span>Below Average (1.1-2.0)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #F44336;"></div>
+                    <span>Poor (0.0-1.0)</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Default coordinates (Hyderabad, Telangana)
+            const defaultCoords = [17.3850, 78.4867];
+            
+            // Initialize the map
+            const map = L.map('map').setView(defaultCoords, 12);
+
+            // Add the OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Function to create circular safety zones
+            function createGradientZone(centerLat, centerLon, safetyScore, size = 0.005, customDescription = '') {
+                let color, fillColor, fillOpacity;
+                let scoreText, description;
+                
+                if (safetyScore >= 4.1) {
+                    color = '#2E7D32';
+                    fillColor = '#4CAF50';
+                    fillOpacity = 0.6;
+                    scoreText = 'Good';
+                    description = 'Well-lit area with good infrastructure and active public spaces.';
+                } else if (safetyScore >= 3.1) {
+                    color = '#558B2F';
+                    fillColor = '#8BC34A';
+                    fillOpacity = 0.5;
+                    scoreText = 'Above Average';
+                    description = 'Generally safe with adequate lighting and walkpaths.';
+                } else if (safetyScore >= 2.1) {
+                    color = '#F57C00';
+                    fillColor = '#FFC107';
+                    fillOpacity = 0.4;
+                    scoreText = 'Average';
+                    description = 'Mixed conditions - some infrastructure gaps may be present.';
+                } else if (safetyScore >= 1.1) {
+                    color = '#E65100';
+                    fillColor = '#FF9800';
+                    fillOpacity = 0.5;
+                    scoreText = 'Below Average';
+                    description = 'Concerns over walkpaths, lighting, or visibility noted in audits.';
+                } else {
+                    color = '#C62828';
+                    fillColor = '#F44336';
+                    fillOpacity = 0.6;
+                    scoreText = 'Poor';
+                    description = 'Significant safety concerns identified, such as inadequate lighting and infrastructure.';
+                }
+                
+                if (customDescription) {
+                    description = customDescription;
+                }
+
+                // Convert size (in degrees) to radius in meters. 1 degree latitude is approx 111km.
+                const radiusInMeters = size * 111000;
+
+                const circle = L.circle([centerLat, centerLon], {
+                    radius: radiusInMeters,
+                    color: color,
+                    weight: 2,
+                    fillColor: fillColor,
+                    fillOpacity: fillOpacity,
+                    opacity: 0.8
+                }).addTo(map);
+
+                circle.bindPopup(`
+                    <div style="font-family: Arial, sans-serif; max-width: 200px;">
+                        <h4 style="color: ${color}; margin: 0 0 8px 0;">Safety Score: ${safetyScore.toFixed(1)}/5.0</h4>
+                        <p style="margin: 0 0 8px 0; font-weight: bold;">${scoreText}</p>
+                        <p style="margin: 0; font-size: 12px; line-height: 1.4;">${description}</p>
+                    </div>
+                `);
+
+                return circle;
+            }
+
+            // Function to render safety zones based on Safetipin audit data
+            function renderSafetyZones() {
+                // Safety audit data based on the hyderabad-safety-audit-report-safetipin-2022.pdf
+                const safetyZones = [
+                    // --- Zones with identified issues from the report ---
+                    { lat: 17.420, lon: 78.350, score: 1.5, size: 0.006, desc: 'Safety audit noted a lack of streetlights on the Khajaguda-Nanakramguda stretch.' },
+                    { lat: 17.380, lon: 78.440, score: 1.8, size: 0.008, desc: 'Non-operational streetlights were reported on the PV Narsimha Rao Expressway, reducing night-time safety.' },
+                    { lat: 17.410, lon: 78.390, score: 2.4, size: 0.007, desc: 'Walkpath in the Shaikpet area was found to be unpaved, posing difficulties for pedestrians.' },
+                    { lat: 17.490, lon: 78.390, score: 2.2, size: 0.008, desc: 'Pedestrian walkpaths on the Kukatpally Housing Board Road were found to be blocked by construction debris.' },
+                    { lat: 17.412, lon: 78.375, score: 2.3, size: 0.006, desc: 'Audit noted unpaved walkpaths on Lanco Hills Road.'},
+                    { lat: 17.425, lon: 78.435, score: 2.3, size: 0.005, desc: 'Srinagar Colony Main Road was reported to have no proper pavement for pedestrians.'},
+                    { lat: 17.430, lon: 78.540, score: 2.6, size: 0.007, desc: 'High, solid boundary walls along the Lalapet-Moula-Ali Road reduce visibility and "eyes on the street".' },
+                    { lat: 17.360, lon: 78.490, score: 2.9, size: 0.005, desc: 'Rein Bazar shows high gender usage but has poor public transport access, impacting overall safety.' },
+                    { lat: 17.422, lon: 78.515, score: 2.5, size: 0.006, desc: 'Walkpaths on Chilkalaguda Road were found to be frequently blocked by vehicular parking.'},
+
+                    // --- NEW HOTSPOTS ADDED ---
+                    { lat: 17.437, lon: 78.448, score: 2.7, size: 0.007, desc: 'Ameerpet area shows significant walkpath obstructions due to commercial activity and parking, as noted in audit maps.' },
+                    { lat: 17.388, lon: 78.555, score: 2.8, size: 0.008, desc: 'Visibility issues were noted in the Nagole area due to high boundary walls along road stretches.' },
+                    { lat: 17.450, lon: 78.530, score: 2.6, size: 0.009, desc: 'Malkajgiri has mixed infrastructure with some areas showing inconsistent street lighting.' },
+                    { lat: 17.330, lon: 78.410, score: 2.9, size: 0.010, desc: 'As a peripheral area, Rajendranagar has comparatively lower public transport connectivity, affecting last-mile safety.'},
+
+                    // --- Zones reflecting better-rated areas from the report ---
+                    { lat: 17.445, lon: 78.380, score: 4.3, size: 0.010, desc: 'Hitec City area generally has good lighting and infrastructure, aligning with high safety scores.' },
+                    { lat: 17.418, lon: 78.338, score: 4.5, size: 0.012, desc: 'Gachibowli Financial District is well-planned with good visibility and public spaces.' },
+                    { lat: 17.425, lon: 78.450, score: 3.8, size: 0.009, desc: 'Banjara Hills scores above average due to active streets and good infrastructure.' },
+                    { lat: 17.450, lon: 78.395, score: 3.9, size: 0.008, desc: 'Madhapur is rated above average, with generally safe conditions and good walkpaths.' },
+                    { lat: 17.435, lon: 78.500, score: 3.6, size: 0.011, desc: 'Areas in Secunderabad show above-average safety with good access to public transport.' },
+                    { lat: 17.431, lon: 78.409, score: 3.2, size: 0.007, desc: 'Jubilee Hills Check Post has bright lighting on the main road, but walkpath illumination can be less effective due to centrally-placed lights.'},
+                    { lat: 17.440, lon: 78.460, score: 3.7, size: 0.008, desc: 'The Begumpet area maintains an above-average safety score due to good lighting and public transport access.'}
+                ];
+
+                safetyZones.forEach(zone => {
+                    createGradientZone(zone.lat, zone.lon, zone.score, zone.size, zone.desc);
+                });
+            }
+
+            // Geolocation Success Callback
+            function onLocationFound(e) {
+                const userCoords = e.latlng;
+
+                // Center map on user's location, but don't zoom in too far
+                map.setView(userCoords, 14);
+
+                // Add a marker for the user's location
+                L.marker(userCoords).addTo(map)
+                    .bindPopup("You are here").openPopup();
+            }
+
+            // Geolocation Error Callback
+            function onLocationError(e) {
+                console.log("Could not get your location. Showing default map for Hyderabad.");
+                map.setView(defaultCoords, 12);
+            }
+            
+            // Render the fixed safety zones for Hyderabad
+            renderSafetyZones();
+
+            // Request user's location
+            map.on('locationfound', onLocationFound);
+            map.on('locationerror', onLocationError);
+
+            map.locate({setView: false, maxZoom: 16}); // setView is false to prevent overriding the initial view before zones are rendered
+        });
+    </script>
+</body>
+</html>

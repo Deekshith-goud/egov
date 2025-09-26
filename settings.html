@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | Telangana Women & Child Safety Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .main-header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+        }
+        .govt-logo .logo-img {
+            height: 50px;
+            width: auto;
+            margin-right: 15px;
+        }
+        .site-title h1 {
+            color: #1e3c72;
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .site-title p {
+            color: #666;
+            font-size: 14px;
+        }
+        .dashboard-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 260px;
+            min-width: 260px;
+            background: #fff;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            z-index: 900;
+        }
+        .sidebar-nav h3 {
+            color: #999;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            padding: 0 10px;
+        }
+        .sidebar-nav ul { list-style: none; }
+        .sidebar-nav li a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #555;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .sidebar-nav li a .fas {
+            width: 30px;
+            font-size: 16px;
+            text-align: center;
+            margin-right: 10px;
+        }
+        .sidebar-nav li a:hover {
+            background-color: #f0f2f5;
+            color: #1e3c72;
+        }
+        .sidebar-nav li a.active {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            box-shadow: 0 4px 10px rgba(30, 60, 114, 0.3);
+        }
+        .quick-links {
+            padding: 15px 0;
+            border-top: 1px solid #eee;
+            margin-top: auto;
+        }
+        .quick-links h3 {
+            color: #999;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            padding: 0 10px;
+        }
+        .quick-links ul { list-style: none; }
+        .quick-links li { margin-bottom: 8px; }
+        .quick-link-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            color: #555;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            background-color: #f0f2f5;
+            border: 1px solid #e0e0e0;
+        }
+        .quick-link-item .fas {
+            width: 25px;
+            font-size: 16px;
+            text-align: center;
+            margin-right: 10px;
+        }
+        .quick-link-item:hover {
+            background-color: #e9eef7;
+            border-color: #1e3c72;
+            color: #1e3c72;
+        }
+        .quick-link-item.emergency {
+            background-color: #fff0f0;
+            border-color: #f44336;
+            color: #c62828;
+            font-weight: 600;
+        }
+        .quick-link-item.emergency:hover {
+            background-color: #f44336;
+            color: #fff;
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        .settings-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .settings-container h2 {
+            color: #1e3c72;
+            margin-bottom: 25px;
+            font-size: 26px;
+        }
+        .setting-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            padding: 25px;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .card-header h3 {
+            font-size: 20px;
+            color: #1e3c72;
+            display: flex;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+        .card-header h3 .fas {
+            margin-right: 12px;
+            color: #2a5298;
+        }
+        .edit-btn {
+            background: none;
+            border: 1px solid #ddd;
+            color: #555;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+        .edit-btn:hover {
+            background-color: #f0f2f5;
+            color: #1e3c72;
+            border-color: #1e3c72;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #1e3c72;
+        }
+        .form-group input:disabled {
+            background-color: #f9f9f9;
+            color: #888;
+        }
+        .notification-setting {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .notification-setting:last-child {
+            border-bottom: none;
+        }
+        .notification-label p {
+            font-weight: 600;
+            color: #333;
+        }
+        .notification-label span {
+            font-size: 13px;
+            color: #777;
+        }
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 28px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2a5298;
+        }
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+        .save-btn, .cancel-btn {
+            border: none;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .save-btn {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+        }
+        .save-btn:hover {
+            box-shadow: 0 6px 15px rgba(30, 60, 114, 0.4);
+            transform: translateY(-2px);
+        }
+        .cancel-btn {
+            background: #f0f2f5;
+            color: #555;
+            border: 1px solid #ddd;
+        }
+        .cancel-btn:hover {
+            background: #e5e5e5;
+        }
+        .save-btn:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .form-action {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .save-confirmation {
+            color: #4CAF50;
+            font-size: 28px;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .save-confirmation.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="govt-logo">
+            <img src="lo.jpg" alt="Telangana State Emblem" class="logo-img">
+        </div>
+        <div class="site-title">
+            <h1>Women & Child Safety</h1>
+            <p>Government of Telangana</p>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <h3>Navigation</h3>
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="report_incident.html"><i class="fas fa-exclamation-triangle"></i> Report Incident</a></li>
+                    <li><a href="quick_links.html"><i class="fas fa-life-ring"></i> Helplines</a></li>
+                    <li><a href="myreports.html"><i class="fas fa-history"></i> My Reports</a></li>
+                    <li><a href="settings.html" class="active"><i class="fas fa-cog"></i> Settings</a></li>
+                </ul>
+            </nav>
+            <div class="quick-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="tel:100" class="quick-link-item emergency"><i class="fas fa-exclamation-circle"></i> Police (100)</a></li>
+                    <li><a href="tel:1091" class="quick-link-item emergency"><i class="fas fa-female"></i> Women Helpline (1091)</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="settings-container">
+                <h2>Settings</h2>
+
+                <div class="setting-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-user-circle"></i>Profile Information</h3>
+                        <button class="edit-btn"><i class="fas fa-pencil-alt"></i> Edit</button>
+                    </div>
+                    <form>
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" value="Jane Doe">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" value="+91 98765 43210">
+                        </div>
+                         <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" value="jane.doe@example.com">
+                        </div>
+                        <div class="form-action">
+                           <button type="submit" class="save-btn">Save Profile</button>
+                           <button type="button" class="cancel-btn">Cancel</button>
+                           <span class="save-confirmation"><i class="fas fa-check-circle"></i></span>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="setting-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-map-marker-alt"></i>Location Preferences</h3>
+                        <button class="edit-btn"><i class="fas fa-pencil-alt"></i> Edit</button>
+                    </div>
+                    <form>
+                         <div class="form-group">
+                            <label for="default-location">Default Location</label>
+                            <input type="text" id="default-location" placeholder="Enter your home or work address">
+                        </div>
+                        <div class="notification-setting">
+                            <div class="notification-label">
+                                <p>Use Current Location</p>
+                                <span>Allow the app to use your GPS for real-time safety mapping.</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="form-action">
+                            <button type="submit" class="save-btn">Save Location</button>
+                            <button type="button" class="cancel-btn">Cancel</button>
+                            <span class="save-confirmation"><i class="fas fa-check-circle"></i></span>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="setting-card">
+                     <div class="card-header">
+                        <h3><i class="fas fa-bell"></i>Notifications</h3>
+                    </div>
+                    <div class="notification-setting">
+                        <div class="notification-label">
+                            <p>Push Notifications</p>
+                            <span>Receive alerts about incidents in your area.</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                     <div class="notification-setting">
+                        <div class="notification-label">
+                            <p>Email Notifications</p>
+                            <span>Get summaries and updates via email.</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                     <div class="notification-setting">
+                        <div class="notification-label">
+                            <p>SMS Alerts</p>
+                            <span>Receive critical alerts via SMS.</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+     <script>
+        document.querySelectorAll('.setting-card').forEach(card => {
+            const editBtn = card.querySelector('.edit-btn');
+            const form = card.querySelector('form');
+
+            // If a card has no edit button or form, skip it (like Notifications)
+            if (!editBtn || !form) return;
+
+            const saveBtn = form.querySelector('.save-btn');
+            const cancelBtn = form.querySelector('.cancel-btn');
+            const inputs = form.querySelectorAll('input');
+            const formAction = form.querySelector('.form-action');
+            const confirmationIcon = form.querySelector('.save-confirmation');
+
+            // Function to set the card to view mode
+            const setViewMode = () => {
+                inputs.forEach(input => input.disabled = true);
+                formAction.style.display = 'none';
+                editBtn.style.display = 'flex';
+            };
+
+            // Function to set the card to edit mode
+            const setEditMode = () => {
+                inputs.forEach(input => input.disabled = false);
+                formAction.style.display = 'flex';
+                editBtn.style.display = 'none';
+            };
+
+            // Add event listeners
+            editBtn.addEventListener('click', setEditMode);
+            cancelBtn.addEventListener('click', setViewMode);
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Disable buttons to prevent multiple submissions
+                saveBtn.disabled = true;
+                cancelBtn.style.pointerEvents = 'none';
+
+                // Show confirmation checkmark
+                confirmationIcon.classList.add('visible');
+                
+                // After 2 seconds, hide confirmation and go back to view mode
+                setTimeout(() => {
+                    confirmationIcon.classList.remove('visible');
+                    saveBtn.disabled = false;
+                    cancelBtn.style.pointerEvents = 'auto';
+                    setViewMode();
+                }, 2000);
+            });
+
+            // Set the initial state for the card
+            setViewMode();
+        });
+    </script>
+</body>
+</html>
